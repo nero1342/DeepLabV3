@@ -5,7 +5,7 @@ seed: 42
 model:
     name: DeeplabV3
     args:
-      numclasses: 40
+      numclasses: 91
       
 optimizer:
     name: Adam
@@ -18,12 +18,13 @@ optimizer:
 loss:
     name: CrossEntropyLoss
     args:
-        nclasses: 40
+        #nclasses: 40
         # ... more args
 metric:
-    - name: DiceScore
+    - name: PixelAccuracy
       args:
          # nclasses: 11
+         nclasses: 91
 
 scheduler:
     name: ReduceLROnPlateau
@@ -35,37 +36,36 @@ scheduler:
 
 dataset:
     train:
-        dataset:
-            name: COCODataset
-            args:
-                img_folder: CocoDataset/val2017
-                annot_file: CocoDataset/annotations/val_split_train_instances.json
-                # img_folder: /home/nero/YoutubeVIS21/train/JPEGImages
-                # annot_file: /home/nero/YoutubeVIS21/train/train_instances_frames.json
-                max_annot: -1
+        
+        name: COCODataset
+        args:
+            img_folder: CocoDataset/val2017
+            annot_file: CocoDataset/annotations/val_split_train_instances.json
+            # img_folder: /home/nero/YoutubeVIS21/train/JPEGImages
+            # annot_file: /home/nero/YoutubeVIS21/train/train_instances_frames.json
+            max_annot: 1000
           
         loader:
             name: DataLoader
             args:
-                batch_size: 1
+                batch_size: 10
                 num_workers: 4
                 shuffle: True
     val:
-        dataset:
-            name: COCODataset
-            args:
-                img_folder: CocoDataset/val2017
-                annot_file: CocoDataset/annotations/val_split_val_instances.json
-                max_annot: -1
+        name: COCODataset
+        args:
+            img_folder: CocoDataset/val2017
+            annot_file: CocoDataset/annotations/val_split_val_instances.json
+            max_annot: 1000
         loader:
             name: DataLoader
             args:
-                batch_size: 1
+                batch_size: 10
                 num_workers: 4
                 shuffle: False 
 
 trainer:
     nepochs: 100
     val_step: 1
-    backward_step: 1
+    backward_step: 4
     save_dir: runs

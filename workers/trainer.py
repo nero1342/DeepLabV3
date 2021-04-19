@@ -104,21 +104,25 @@ class Trainer():
             # 3: Get network outputs
             outs = self.model(inp)
             # 4: Calculate the loss
+            prediction = torch.argmax(outs, dim=1)
+            #print(torch.min(prediction), torch.max(prediction), torch.min(lbl),torch.max(lbl))
+        
             loss = self.criterion(outs, lbl)
             # 5: Calculate gradients
+            #print(loss.item(), "Loss")
             loss.backward()
             # 6: Performing backpropagation
-            if (i + 1) % self.backward_step == 0:
-              self.optimizer.step()
-              self.optimizer.zero_grad()
+            # if (i + 1) % self.backward_step == 0:
+            self.optimizer.step()
+            self.optimizer.zero_grad()
         
             total_loss.add(loss.item()) 
 
             outs = detach(outs)
             lbl = detach(lbl)
             for m in self.metric.values():
-                value = m.calculate(outs, lbl)
-                m.update(value)
+                # value = m.calculate(outs, lbl)
+                m.update(outs, lbl)
 
             with torch.no_grad():
                 total_loss.add(loss.item())
