@@ -172,8 +172,8 @@ class Trainer():
             outs = detach(outs)
             lbl = detach(lbl)
             for m in self.metric.values():
-                value = m.calculate(outs, lbl)
-                m.update(value)
+                # value = m.calculate(outs, lbl)
+                m.update(outs, lbl)
 
             total_loss.add(loss.item())
             desc = 'Iteration: {}/{}. Total loss: {:.5f}. '.format(
